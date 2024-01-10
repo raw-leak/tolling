@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 	"tolling/common"
@@ -36,14 +37,13 @@ type DistanceCalculator struct {
 
 func (dc *DistanceCalculator) Run(ctx context.Context) {
 	consCh := dc.con.Consume(ctx)
-	pl := dc.logger.New()
-
-	pl.Info("started distance calculation process")
+	dc.logger.New().Info("started distance calculation process")
 
 	// TODO: improve by spanning multiple go routines
 	for p := range consCh {
 		l := dc.logger.New()
 		if traceID, ok := p.ctx.Value(types.KeyTraceID).(string); ok {
+			fmt.Println("before sending to AggregateInvoice HTTP traceID", traceID, ok)
 			l.WithTraceID(traceID)
 		}
 
@@ -56,7 +56,7 @@ func (dc *DistanceCalculator) Run(ctx context.Context) {
 
 	}
 
-	pl.Info("finished distance calculation process")
+	dc.logger.New().Info("finished distance calculation process")
 }
 
 func NewDistanceCalculator(con Consumer[types.OBUData], aggregator Aggregator, logger common.Logger) *DistanceCalculator {

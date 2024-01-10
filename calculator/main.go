@@ -14,7 +14,7 @@ import (
 const (
 	kafkaTopic        = "test-topic"
 	kafkaAddrs        = "127.0.0.1:29092"
-	aggregateEndpoint = ""
+	aggregateEndpoint = "http://127.0.0.1:3000/aggregate"
 )
 
 func main() {

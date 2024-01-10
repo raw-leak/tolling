@@ -14,7 +14,7 @@ func NewLogMiddleware[T any](next Consumer[T]) *LogMiddleware[T] {
 	return &LogMiddleware[T]{next}
 }
 
-func (lw *LogMiddleware[T]) Consume(ctx context.Context) chan T {
+func (lw *LogMiddleware[T]) Consume(ctx context.Context) chan EventPayload[T] {
 	logrus.Info("started consuming from topics: []")
 	return lw.next.Consume(ctx)
 }

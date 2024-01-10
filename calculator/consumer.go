@@ -8,8 +8,6 @@ import (
 	"tolling/types"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
-	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/sirupsen/logrus"
 )
 
 type Logger interface {
@@ -58,7 +56,7 @@ func (kc *KafkaConsumer[T]) Consume(ctx context.Context) chan EventPayload[T] {
 	go func() {
 		defer kc.con.Close()
 		defer close(conCh)
-		processLog := kc.logger
+		kc.logger.New().Info("started to consume from kafka")
 
 		for {
 			select {
@@ -68,32 +66,32 @@ func (kc *KafkaConsumer[T]) Consume(ctx context.Context) chan EventPayload[T] {
 			default:
 				var data T
 				msg, err := kc.con.ReadMessage(-1)
-
-				l := logger.New()
+				l := kc.logger.New()
 
 				if err != nil {
 					if kafkaErr, ok := err.(kafka.Error); ok && kafkaErr.IsTimeout() {
 						continue
 					}
-					l.Error("read kafka message error:  %v\n", err)
+					l.Errorf("read kafka message error:  %v\n", err)
 					continue
 				}
 
 				ctx := context.Background()
 				if len(msg.Headers) > 0 {
 					traceID := string(msg.Headers[0].Value)
-					ctx = context.WithValue(ctx, string(types.KeyTraceID), traceID)
-
-					l.
-						logrus.WithFields(logrus.Fields{
-						string(types.KeyTraceID): traceID,
-					}).Info("KAFKA ->")
+					ctx = context.WithValue(ctx, types.KeyTraceID, traceID)
+					l.WithTraceID(traceID)
 				}
 
 				if err := json.Unmarshal(msg.Value, &data); err != nil {
-					fmt.Println("error on unmarshal")
+					l.Errorf("failed to marshal consumed OBU data from kafka with error: \n%v", err)
 					continue
 				}
+
+				l.Info("consumed OBU data")
+
+				v, o := ctx.Value(types.KeyTraceID).(string)
+				fmt.Println("before sendit the evnet to channel ->>> ", v, o)
 
 				conCh <- EventPayload[T]{data, ctx}
 			}
