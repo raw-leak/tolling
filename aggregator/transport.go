@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"tolling/common"
 	"tolling/types"
@@ -23,7 +24,11 @@ func (t *HttpTransport) handleAggregate(w http.ResponseWriter, r *http.Request) 
 	l := t.logger.New()
 
 	ctx := context.Background()
+	fmt.Println(ctx)
+	fmt.Println(r.Header)
 	if traceIds, ok := r.Header[types.TraceIDHeader]; ok && len(traceIds) > 0 {
+		fmt.Println("traceIds", traceIds)
+
 		ctx = context.WithValue(ctx, types.KeyTraceID, traceIds[0])
 		l.WithTraceID(traceIds[0])
 	}
@@ -42,5 +47,4 @@ func (t *HttpTransport) handleAggregate(w http.ResponseWriter, r *http.Request) 
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
-	l.Info("aggregate processed")
 }

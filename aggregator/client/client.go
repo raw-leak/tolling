@@ -21,7 +21,9 @@ func NewAggregatorHttpClient(endpoint string, logger common.Logger) *AggregatorH
 
 func (c *AggregatorHttpClient) AggregateInvoice(ctx context.Context, d types.Distance) error {
 	l := c.logger.New()
-	if traceID, ok := ctx.Value(types.KeyTraceID).(string); ok {
+	traceID, ok := ctx.Value(types.KeyTraceID).(string)
+	fmt.Println("TRACE ID in client -> ", traceID, ok)
+	if ok {
 		l.WithTraceID(traceID)
 	}
 
@@ -33,8 +35,12 @@ func (c *AggregatorHttpClient) AggregateInvoice(ctx context.Context, d types.Dis
 
 	req, err := http.NewRequest("POST", c.Endpoint, bytes.NewReader(b))
 	if err != nil {
-		l.Error("http request failed")
+		l.Errorf("http request failed: \n%v", err)
 		return err
+	}
+
+	if ok {
+		req.Header.Set(types.TraceIDHeader, traceID)
 	}
 
 	res, err := http.DefaultClient.Do(req)
