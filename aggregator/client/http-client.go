@@ -19,7 +19,7 @@ func NewAggregatorHttpClient(endpoint string, logger common.Logger) *AggregatorH
 	return &AggregatorHttpClient{Endpoint: endpoint, logger: logger}
 }
 
-func (c *AggregatorHttpClient) AggregateInvoice(ctx context.Context, d types.Distance) error {
+func (c *AggregatorHttpClient) Aggregate(ctx context.Context, d types.Distance) error {
 	l := c.logger.New()
 	traceID, ok := ctx.Value(types.KeyTraceID).(string)
 	fmt.Println("TRACE ID in client -> ", traceID, ok)
