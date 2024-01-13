@@ -10,7 +10,7 @@ import (
 )
 
 type Aggregator interface {
-	AggregateInvoice(ctx context.Context, d types.Distance) error
+	Aggregate(ctx context.Context, d types.Distance) error
 }
 
 type Consumer[T any] interface {
@@ -48,10 +48,9 @@ func (dc *DistanceCalculator) Run(ctx context.Context) {
 		}
 
 		dist := dc.calculateDistanceAndSavePoint(p.data)
-		err := dc.aggregator.AggregateInvoice(p.ctx, types.Distance{OBUID: p.data.OBUID, Value: dist, Unix: time.Now().Unix()})
-
+		err := dc.aggregator.Aggregate(p.ctx, types.Distance{OBUID: p.data.OBUID, Value: dist, Unix: time.Now().Unix()})
 		if err != nil {
-			l.WithError(err).Error("failed to send to aggregate invoice")
+			l.WithError(err).Error("failed to aggregate invoice")
 		}
 
 	}
@@ -64,7 +63,8 @@ func NewDistanceCalculator(con Consumer[types.OBUData], aggregator Aggregator, l
 }
 
 func (ds *DistanceCalculator) calculateDistance(x1, x2, y1, y2 float64) float64 {
-	return 0.0
+	// we do not care about actual calculation
+	return x1 + y2
 }
 
 func (ds *DistanceCalculator) calculateDistanceAndSavePoint(data types.OBUData) float64 {

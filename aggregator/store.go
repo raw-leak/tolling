@@ -19,6 +19,14 @@ func (s *MemoryStorer) Store(ctx context.Context, d types.Distance) error {
 	return nil
 }
 
+func (s *MemoryStorer) Read(ctx context.Context, OBUID int) (float64, bool) {
+	s.mx.RLock()
+	defer s.mx.RUnlock()
+
+	dist, ok := s.data[OBUID]
+	return dist, ok
+}
+
 func NewMemoryStorer() *MemoryStorer {
 	return &MemoryStorer{data: make(map[int]float64), mx: sync.RWMutex{}}
 }

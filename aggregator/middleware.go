@@ -32,3 +32,21 @@ func (lw *LogMiddleware) Aggregate(ctx context.Context, d types.Distance) (err e
 	err = lw.next.Aggregate(ctx, d)
 	return
 }
+
+func (lw *LogMiddleware) GetInvoice(ctx context.Context, OBUID int) (invoice types.Invoice, err error) {
+	defer func() {
+		l := lw.logger.New()
+		if traceID, ok := ctx.Value(types.KeyTraceID).(string); ok {
+			l.WithTraceID(traceID)
+		}
+
+		if err != nil {
+			l.WithError(err).Error("invoice calculation failed")
+		} else {
+			l.WithOBUID(OBUID).Info("invoice calculation succeeded")
+		}
+	}()
+
+	invoice, err = lw.next.GetInvoice(ctx, OBUID)
+	return
+}

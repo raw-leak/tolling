@@ -56,7 +56,6 @@ func (kc *KafkaConsumer[T]) Consume(ctx context.Context) chan EventPayload[T] {
 	go func() {
 		defer kc.con.Close()
 		defer close(conCh)
-		kc.logger.New().Info("started to consume from kafka")
 
 		for {
 			select {
