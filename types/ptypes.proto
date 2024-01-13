@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "tolling/types";
+
+// Service definition
+service Aggregator {
+    rpc Aggregate(AggregateReq) returns (None);
+}
+
+// Empty response message
+message None {}
+
+// Request message for AggregateDistance
+message AggregateReq {
+    int32 ObuId = 1;
+    double Value = 2;
+    int64 Unix = 3;
+}
