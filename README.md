@@ -3,20 +3,12 @@
 </div>
 
 <div align="center">
-
   [![Go](https://img.shields.io/badge/Go-v1.21-blue.svg)](https://golang.org/)
-  ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/user/real-time-truck-tracker/main)
-  ![GitHub Repo stars](https://img.shields.io/github/stars/user/real-time-truck-tracker)
   ![License](https://img.shields.io/badge/license-MIT-green)
-  [![CI](https://github.com/user/real-time-truck-tracker/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/user/real-time-truck-tracker/actions/workflows/ci.yaml)
-  ![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/quality/g/user/real-time-truck-tracker/main)
-  ![Github Repository Size](https://img.shields.io/github/repo-size/user/real-time-truck-tracker)
-  ![GitHub contributors](https://img.shields.io/github/contributors/user/real-time-truck-tracker)
-  ![Github Open Issues](https://img.shields.io/github/issues/user/real-time-truck-tracker)
 </div>
 
 <div align="center">
-  <img src="images/truck-logo.png" alt="Project Logo" width="200">
+  <img src="images/go-logo.png" alt="Project Logo" width="200">
 </div>
 
 ## Introduction
