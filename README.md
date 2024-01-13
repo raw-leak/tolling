@@ -3,6 +3,7 @@
 </div>
 
 <div align="center">
+
   [![Go](https://img.shields.io/badge/Go-v1.21-blue.svg)](https://golang.org/)
   ![License](https://img.shields.io/badge/license-MIT-green)
 </div>
