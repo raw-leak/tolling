@@ -11,6 +11,7 @@ import (
 
 type Aggregator interface {
 	Aggregate(ctx context.Context, d types.Distance) error
+	GetInvoice(ctx context.Context, id int) (types.Invoice, error)
 }
 
 type Consumer[T any] interface {

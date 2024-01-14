@@ -14,7 +14,7 @@ import (
 const (
 	kafkaTopic      = "test-topic"
 	kafkaAddrs      = "127.0.0.1:29092"
-	aggHttpEndpoint = "http://127.0.0.1:3000/aggregate"
+	aggHttpEndpoint = "http://127.0.0.1:3000"
 	aggGrpcEndpoint = "127.0.0.1:50051"
 )
 
@@ -44,7 +44,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// aggHTTP := client.NewAggregatorHttpClient(aggHttpEndpoint, logger)
+	aggHTTP := client.NewAggregatorHttpClient(aggHttpEndpoint, logger)
 	aggGRPC, err := client.NewAggregatorGrpcClient(aggGrpcEndpoint, logger)
 	if err != nil {
 		log.Fatalln("GRPS is not connected")
