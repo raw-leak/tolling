@@ -5,14 +5,26 @@ option go_package = "tolling/types";
 // Service definition
 service Aggregator {
     rpc Aggregate(AggregateReq) returns (None);
+    rpc GetInvoice(GetInvoiceReq) returns (InvoiceRes);
 }
 
 // Empty response message
 message None {}
 
-// Request message for AggregateDistance
+// Request message for Aggregate
 message AggregateReq {
-    int32 ObuId = 1;
+    int32 OBUID = 1;
     double Value = 2;
     int64 Unix = 3;
+}
+
+// Request message for GetInvoice
+message GetInvoiceReq {
+    int32 OBUID = 1;
+}
+
+message InvoiceRes {
+    int32 OBUID = 1;
+    int64 TotalDistance = 2;
+    int64 TotalAmount = 3;
 }
