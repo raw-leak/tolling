@@ -26,7 +26,7 @@ func (t *GrpcTransport) Aggregate(ctx context.Context, req *types.AggregateReq) 
 
 	distance := types.Distance{
 		Value: req.Value,
-		OBUID: int(req.ObuId),
+		OBUID: int(req.OBUID),
 		Unix:  req.Unix,
 	}
 

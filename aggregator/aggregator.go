@@ -9,6 +9,7 @@ import (
 type Aggregator interface {
 	Aggregate(context.Context, types.Distance) error
 	GetInvoice(context.Context, int) (types.Invoice, error)
+	Shutdown() error
 }
 
 type Storer interface {

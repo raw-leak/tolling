@@ -51,13 +51,27 @@ func NewAggregatorGrpcClient(grpcAddr string, logger common.Logger) (*Aggregator
 }
 
 func (c *AggregatorGrpcClient) Aggregate(ctx context.Context, d types.Distance) error {
-	req := types.AggregateReq{Value: d.Value, Unix: d.Unix, ObuId: int32(d.OBUID)}
+	req := types.AggregateReq{Value: d.Value, Unix: d.Unix, OBUID: int32(d.OBUID)}
 	_, err := c.AggregatorClient.Aggregate(ctx, &req)
 	if err != nil {
 		return err
 	}
 
-	return nil 
+	return nil
+}
+
+func (c *AggregatorGrpcClient) GetInvoice(ctx context.Context, OBUID int) (types.Invoice, error) {
+	req := types.GetInvoiceReq{OBUID: int32(OBUID)}
+	invRes, err := c.AggregatorClient.GetInvoice(ctx, &req)
+	if err != nil {
+		return types.Invoice{}, err
+	}
+
+	return types.Invoice{
+		OBUID:         int(invRes.OBUID),
+		TotalDistance: float64(invRes.TotalDistance),
+		TotalAmount:   float64(invRes.TotalAmount),
+	}, nil
 }
 
 func (c *AggregatorGrpcClient) Shutdown() error {
