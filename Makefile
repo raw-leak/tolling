@@ -1,4 +1,8 @@
-.PHONY: generator receiver calculator aggregator proto
+.PHONY: gateway generator receiver calculator aggregator proto 
+
+gateway:
+	@go build -o bin/gateway gateway/main.go
+	@./bin/gateway
 
 generator:
 	@go build -o bin/generator generator/main.go

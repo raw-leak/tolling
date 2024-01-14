@@ -25,10 +25,13 @@ This project is a distributed microservices application for real-time tracking o
 
 ## System Overview
 
+- **Gateway:** Represent a simple API-Gateway that redirects to only allowed endpoints.
 - **Generator Service:** Connects via WebSocket and transmits location data.
 - **Receiver Service:** Receives data and forwards it to Kafka.
 - **Aggregator Service:** Receives calculated distances and determines charges.
 - **Calculator Service:** Processes location data from Kafka, calculates distances.
+- **Common:** Contains commonly used packages
+- **Types:** Contains commonly used types
 
 ## Installation and Running
 
@@ -48,6 +51,7 @@ This project is a distributed microservices application for real-time tracking o
    $ make receiver
    $ make calculator
    $ make aggregator
+   $ make gateway
    ```
 
 ## Features
