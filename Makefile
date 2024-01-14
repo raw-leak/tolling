@@ -1,8 +1,8 @@
-.PHONY: obu receiver calculator aggregator proto
+.PHONY: generator receiver calculator aggregator proto
 
-obu:
-	@go build -o bin/obu obu/main.go
-	@./bin/obu
+generator:
+	@go build -o bin/generator generator/main.go
+	@./bin/generator
 
 receiver:
 	@go build -o bin/receiver receiver/*.go
@@ -16,5 +16,6 @@ aggregator:
 	@go build -o bin/aggregator aggregator/*.go
 	@./bin/aggregator
 
+# generate gRPC go client
 proto:
 	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative types/ptypes.proto

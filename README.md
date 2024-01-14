@@ -25,10 +25,10 @@ This project is a distributed microservices application for real-time tracking o
 
 ## System Overview
 
-- **OBU Service:** Connects via WebSocket and transmits location data.
+- **Generator Service:** Connects via WebSocket and transmits location data.
 - **Receiver Service:** Receives data and forwards it to Kafka.
-- **Calculator Service:** Processes location data from Kafka, calculates distances.
 - **Aggregator Service:** Receives calculated distances and determines charges.
+- **Calculator Service:** Processes location data from Kafka, calculates distances.
 
 ## Installation and Running
 
@@ -44,7 +44,7 @@ This project is a distributed microservices application for real-time tracking o
 
    ```bash
    # Build and run individual services
-   $ make obu
+   $ make generator
    $ make receiver
    $ make calculator
    $ make aggregator
@@ -56,12 +56,8 @@ This project is a distributed microservices application for real-time tracking o
 - ⚙️ Makefile 
 - 🗃️ Kafka
 - 🔄 gRPC/HTTP
-- 🚦 Graceful shutdown in some repos
+- 🚦 Graceful shutdown
 
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-Feel free to customize the "TODO" sections with specific details about how to use and configure each microservice in your application.
