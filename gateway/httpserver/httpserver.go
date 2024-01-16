@@ -7,7 +7,9 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 	"tolling/common"
+	"tolling/types"
 )
 
 type Server struct {
@@ -42,7 +44,6 @@ func (s *Server) Start() error {
 }
 
 func (s *Server) getOrigin(requestURL string) (string, error) {
-
 	parts := strings.Split(requestURL, "/")
 	if len(parts) < 3 {
 		return "", fmt.Errorf("invalid request URL: %s", requestURL)
@@ -89,7 +90,7 @@ func (s *Server) handleRequest(w http.ResponseWriter, r *http.Request) error {
 
 	_, err = io.Copy(w, resp.Body)
 	if err != nil {
-		log.Println("rrror copying response body:", err)
+		log.Println("error copying response body:", err)
 		return err
 	}
 
@@ -98,12 +99,20 @@ func (s *Server) handleRequest(w http.ResponseWriter, r *http.Request) error {
 
 func (s *Server) handleError(fn apiFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		defer func(start time.Time) {
+			l := s.logger.New().WithAge(time.Since(start)).WithReq(r)
+
+			if traceIds, ok := r.Header[types.TraceIDHeader]; ok && len(traceIds) > 0 {
+				l.WithTraceID(traceIds[0])
+			}
+
+			l.Info("REQ ::")
+		}(time.Now())
+
 		if err := fn(w, r); err != nil {
-			fmt.Println("writing error")
 			s.WriteJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 			return
 		}
-		fmt.Println("writing oK")
 
 	}
 }
