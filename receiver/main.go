@@ -15,7 +15,17 @@ func main() {
 	logger := common.NewCustomLogger()
 	l := logger.New()
 
-	receiver, err := NewDataReceiver(logger)
+	producer, err := NewKafkaProducer(KafkaProducerConfig{
+		addrs: kafkaAddrs,
+		topic: kafkaTopic,
+	}, logger)
+	if err != nil {
+		log.Fatalf("kafka could not connect %s", err.Error())
+	}
+
+	producer = NewLogMiddleware(producer, logger)
+
+	receiver, err := NewDataReceiver(producer, logger)
 	if err != nil {
 		log.Fatal(err)
 	}

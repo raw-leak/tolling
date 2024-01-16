@@ -16,7 +16,6 @@ type Producer interface {
 
 type DataReceiver struct {
 	msgCh  chan types.OBUData
-	conn   *websocket.Conn
 	prod   Producer
 	logger common.Logger
 }
@@ -27,19 +26,10 @@ var upgrader = websocket.Upgrader{
 	// CheckOrigin function should be carefully configured to avoid cross-site request forgery (CSRF) attacks.
 }
 
-func NewDataReceiver(logger common.Logger) (*DataReceiver, error) {
-	p, err := NewKafkaProducer(KafkaProducerConfig{
-		addrs: kafkaAddrs,
-		topic: kafkaTopic,
-	}, logger)
-	if err != nil {
-		return nil, err
-	}
-	p = NewLogMiddleware(p, logger)
-
+func NewDataReceiver(prod Producer, logger common.Logger) (*DataReceiver, error) {
 	return &DataReceiver{
 		msgCh:  make(chan types.OBUData, 128),
-		prod:   p,
+		prod:   prod,
 		logger: logger,
 	}, nil
 }
@@ -53,21 +43,27 @@ func (dr *DataReceiver) handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dr.conn = conn
-
-	go dr.wsReceiveLoop()
+	go dr.wsReceiveLoop(conn)
 }
 
-func (dr *DataReceiver) wsReceiveLoop() {
-	dr.logger.New().Info("new OBU connected")
-
+func (dr *DataReceiver) wsReceiveLoop(conn *websocket.Conn) {
+	wsl := dr.logger.New()
+	wsl.Info("new OBU connected")
 	for {
 		l := dr.logger.New()
 
 		var data types.OBUData
-		if err := dr.conn.ReadJSON(&data); err != nil {
+		if err := conn.ReadJSON(&data); err != nil {
 			l.Errorf("failed to read from ws: \n%v", err)
-			continue
+
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				l.Errorf("ws connection closed unexpectedly: \n%v", err)
+			} else {
+				l.Infof("ws connection closed: \n%v", err)
+				conn.WriteMessage(websocket.CloseMessage, []byte{})
+
+			}
+			break
 		}
 
 		traceID := uuid.New().String()
@@ -82,4 +78,7 @@ func (dr *DataReceiver) wsReceiveLoop() {
 		}
 
 	}
+
+	wsl.Info("new OBU disconnected")
+
 }
