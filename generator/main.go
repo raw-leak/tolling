@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"math"
 	"math/rand"
 	"time"
 	"tolling/types"
@@ -27,14 +26,10 @@ func gemerateOBUIDs(max int) []int {
 	ids := make([]int, max)
 
 	for i := 0; i < max; i++ {
-		ids[i] = rand.Intn(math.MaxInt)
+		ids[i] = rand.Intn(100_00)
 	}
 
 	return ids
-}
-
-func sendOBUData(conn *websocket.Conn, data *types.OBUData) error {
-	return conn.WriteJSON(data)
 }
 
 func main() {

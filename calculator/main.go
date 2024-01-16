@@ -44,7 +44,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	aggHTTP := client.NewAggregatorHttpClient(aggHttpEndpoint, logger)
+	// aggHTTP := client.NewAggregatorHttpClient(aggHttpEndpoint, logger)
 	aggGRPC, err := client.NewAggregatorGrpcClient(aggGrpcEndpoint, logger)
 	if err != nil {
 		log.Fatalln("GRPS is not connected")
