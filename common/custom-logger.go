@@ -1,6 +1,9 @@
 package common
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,6 +15,8 @@ type LogEntry interface {
 	WithError(err error) LogEntry
 	WithOBUID(obuid int) LogEntry
 	WithTraceID(traceID string) LogEntry
+	WithAge(age time.Duration) LogEntry
+	WithReq(req *http.Request) LogEntry
 }
 
 type Logger interface {
@@ -61,6 +66,16 @@ func (l *CustomLogger) New() LogEntry {
 
 func (e *CustomLogEntry) WithError(err error) LogEntry {
 	e.entry = e.entry.WithField("error", err)
+	return e
+}
+
+func (e *CustomLogEntry) WithAge(age time.Duration) LogEntry {
+	e.entry = e.entry.WithField("age", age)
+	return e
+}
+
+func (e *CustomLogEntry) WithReq(req *http.Request) LogEntry {
+	e.entry = e.entry.WithFields(logrus.Fields{"uri": req.RequestURI, "method": req.Method})
 	return e
 }
 
