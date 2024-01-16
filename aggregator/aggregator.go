@@ -39,6 +39,10 @@ func (ia InvoiceAggregator) GetInvoice(ctx context.Context, OBUDID int) (types.I
 	}, nil
 }
 
+func (ia InvoiceAggregator) Shutdown() error {
+	return nil
+}
+
 func (ia InvoiceAggregator) calculateInvoice(ctx context.Context, totalDistance float64) float64 {
 	return totalDistance * 1.5
 }
