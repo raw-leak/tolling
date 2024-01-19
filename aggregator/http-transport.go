@@ -8,6 +8,8 @@ import (
 	"tolling/types"
 
 	"context"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type HttpTransport struct {
@@ -82,6 +84,8 @@ func (t *HttpTransport) StartHttpServer(httpAddr string) error {
 
 	http.HandleFunc("/aggregate", t.handleAggregate)
 	http.HandleFunc("/invoice", t.handleGetInvoice)
+
+	http.Handle("/metrics", promhttp.Handler())
 
 	t.logger.New().Infof("server HTTP starting on %s", httpAddr)
 	return t.server.ListenAndServe()

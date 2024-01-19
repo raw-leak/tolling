@@ -50,3 +50,7 @@ func (lw *LogMiddleware) GetInvoice(ctx context.Context, OBUID int) (invoice typ
 	invoice, err = lw.next.GetInvoice(ctx, OBUID)
 	return
 }
+
+func (lw *LogMiddleware) Shutdown() error {
+	return nil
+}
